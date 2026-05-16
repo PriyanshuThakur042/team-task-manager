@@ -8,9 +8,8 @@ const getDashboardStats = async (req, res, next) => {
     const isAdmin = req.user.role === 'admin';
     const userId = req.user._id;
 
-    // If user is admin, aggregate all tasks.
-    // If user is member, aggregate only tasks assigned to them.
-    const matchStage = isAdmin ? {} : { assignedTo: userId };
+    // Aggregate all tasks for both admin and member.
+    const matchStage = {};
 
     const currentDate = new Date();
 

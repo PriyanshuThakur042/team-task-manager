@@ -72,11 +72,8 @@ const updateTaskStatus = async (req, res, next) => {
       throw new Error('Task not found');
     }
 
-    // Check authorization: Must be admin or the assigned user
-    if (
-      req.user.role !== 'admin' &&
-      task.assignedTo?.toString() !== req.user._id.toString()
-    ) {
+    // Check authorization: Must be admin
+    if (req.user.role !== 'admin') {
       res.status(403);
       throw new Error('Not authorized to update this task status');
     }
@@ -164,12 +161,12 @@ const deleteTask = async (req, res, next) => {
   }
 };
 
-// @desc    Get all tasks (Admin gets all, Member gets their assigned tasks)
+// @desc    Get all tasks
 // @route   GET /api/tasks
 // @access  Private
 const getTasks = async (req, res, next) => {
   try {
-    const query = req.user.role === 'admin' ? {} : { assignedTo: req.user._id };
+    const query = {};
     const tasks = await Task.find(query)
       .populate('project', 'title')
       .populate('assignedTo', 'name email')
